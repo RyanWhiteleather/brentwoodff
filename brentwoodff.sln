@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "src\server\Api\Api.csproj", "{BC2F846D-E8E9-40A6-BCDC-63834804ACDC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EspnApi", "src\server\EspnApi\EspnApi.csproj", "{9B480AD8-EFBC-497F-B6BF-B93D24713006}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BC2F846D-E8E9-40A6-BCDC-63834804ACDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC2F846D-E8E9-40A6-BCDC-63834804ACDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC2F846D-E8E9-40A6-BCDC-63834804ACDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC2F846D-E8E9-40A6-BCDC-63834804ACDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B480AD8-EFBC-497F-B6BF-B93D24713006}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B480AD8-EFBC-497F-B6BF-B93D24713006}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B480AD8-EFBC-497F-B6BF-B93D24713006}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B480AD8-EFBC-497F-B6BF-B93D24713006}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
