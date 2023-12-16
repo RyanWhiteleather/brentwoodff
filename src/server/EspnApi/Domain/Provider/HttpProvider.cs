@@ -29,8 +29,19 @@ public class HttpProvider
     public async Task<T> GetAsync<T>(string url)
     {
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        string jsonResponse = await _httpClient.GetStringAsync(url);
+        var jsonResponse = await _httpClient.GetStringAsync(url);
         return JsonConvert.DeserializeObject<T>(jsonResponse);
+    }
+
+    /// <summary>
+    /// Returns just the string of the 
+    /// </summary>
+    /// <param name="url"></param>
+    /// <returns></returns>
+    public Task<string> GetStringAsync(string url)
+    {
+        _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        return _httpClient.GetStringAsync(url);
     }
         
 }

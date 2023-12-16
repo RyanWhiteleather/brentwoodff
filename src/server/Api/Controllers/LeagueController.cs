@@ -14,5 +14,11 @@ namespace Api.Controllers
         {
             return espnApiService.GetLeagueBySeasonAsync(seasonId);
         }
+
+        [HttpGet("{seasonId:int}/{matchupPeriodId:int}/{scoringPeriodId:int}")]
+        public BoxScoreRoot[] GetBoxScoreForWeek(int seasonId, int matchupPeriodId, int scoringPeriodId)
+        {
+            return espnApiService.GetBoxScoreForWeek(seasonId, matchupPeriodId, scoringPeriodId);
+        }
     }
 }

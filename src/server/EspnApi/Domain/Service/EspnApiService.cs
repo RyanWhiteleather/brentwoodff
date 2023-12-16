@@ -1,30 +1,64 @@
+using System.Text.Json.Nodes;
 using EspnApi.Domain.Model;
 using EspnApi.Domain.Provider;
+using Newtonsoft.Json.Linq;
 
 namespace EspnApi.Domain.Service;
 
-public class EspnApiService() : IEspnApiService
+/// <summary>
+/// Service that handles call the to the ESPN V3 Fantasy Football API.
+/// Currently this is only setup to be used with private leagues.
+/// </summary>
+/// <param name="leagueId"></param>
+/// <param name="swid"></param>
+/// <param name="espnS2"></param>
+public class EspnApiService(int leagueId, string swid, string espnS2) : IEspnApiService
 {
-    private const int LEAGUE_ID = 324746;
-    private const string SWID = "{C807AE6E-DA5E-4263-87AE-6EDA5E5263D3}";
-    private const string ESPN_S2 = "AEBETYgH5ZK1fsO3xF9iH2GPiV7D%2BPzjcLrv%2F%2FJCBw2avLHhUEd04AA6xu9jn7M6IDr%2By8DwWkQjdpwiJEJlJPxyLl5UetHSUDlvIHp0hbJVU3SdCrNaSHW4Up1FS6m0NrBrE4glOh6hEmQMKAjU5ExhXBQ1n%2Bhz6RHqBfm0KzOBWsu032NgbjHf9D5%2FaulrJmHbqOOzErwN2hR4Uh47UoAG2aLT2A9lkOgvy9GLZoVYNzqmtU64eXbYqr0AbyjeJ7E1kISpJ4h7KWZCqnHDmnHQaIWKRndj35ns6zwKQLBQXeA5GFHSTlOnRcBKWFqxURMf%2FMoq80ETpil8yXyr58uo";
-
-
-    private readonly HttpProvider _httpProvider = new(SWID, ESPN_S2);
+    private readonly HttpProvider _httpProvider = new(swid, espnS2 );
     
+    /// <summary>
+    /// Returns ESPN fantasy football league data. 
+    /// </summary>
+    /// <param name="seasonId">The year the season took place</param>
+    /// <returns></returns>
     public Task<League> GetLeagueBySeasonAsync(int seasonId)
     {
-        string url = UrlConfigurationProvider.GetLeagueEndpointUrl(LEAGUE_ID, seasonId);
+        var url = new Route(
+                $"{seasonId}/segments/0/leagues/{leagueId}", 
+                "?view=mSettings")
+            .ToString();
         return _httpProvider.GetAsync<League>(url);
     }
 
-    public Task<BoxScore[]> GetBoxScoreForWeekAsync(int seasonId, int matchupPeriodId, int scoringPeriodId)
+    /// <summary>
+    /// Returns the boxscores for a week.
+    /// </summary>
+    /// <param name="seasonId"></param>
+    /// <param name="matchupPeriodId"></param>
+    /// <param name="scoringPeriodId"></param>
+    /// <returns></returns>
+    public BoxScoreRoot[] GetBoxScoreForWeek(int seasonId, int matchupPeriodId, int scoringPeriodId)
     {
-        throw new NotImplementedException();
+        var url = new Route(
+            $"{seasonId}/segments/0/leagues/{leagueId}",
+            $"?view=mMatchup&view=mMatchupScore&scoringPeriodId={scoringPeriodId}"
+        ).ToString();
+        var response =   _httpProvider.GetAsync<dynamic>(url).Result;
+        JArray schedule = response.schedule;
+        
+        var res = 
+            schedule?
+                .Where(p => p["matchupPeriodId"].ToString() == matchupPeriodId.ToString())
+                .Select(jToken => jToken.ToObject<BoxScoreRoot>())
+                .ToArray();
+
+        return res;
+
     }
 
     public Task<DraftPlayer> GetDraftInfo(int seasonId, int scoringPeriodId = 0)
     {
         throw new NotImplementedException();
     }
+    
 }
