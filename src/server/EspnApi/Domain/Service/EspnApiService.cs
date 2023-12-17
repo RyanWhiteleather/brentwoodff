@@ -49,11 +49,11 @@ public class EspnApiService(int leagueId, string swid, string espnS2) : IEspnApi
         
         var response = _httpProvider.GetResults<JsonElement>(url).GetProperty("schedule");
         
-        return response.EnumerateArray()
+       return response.EnumerateArray()
                 .Where(p => p.GetProperty("matchupPeriodId").ToString() == scoringPeriodId.ToString())
                 .Select(element => element.Deserialize<BoxScoreRoot>())
                 .ToArray();
-        
+       
     }
 
     public Task<DraftPlayer> GetDraftInfo(int seasonId, int scoringPeriodId = 0)
