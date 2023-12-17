@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Headers;
-using Newtonsoft.Json;
+using System.Text.Json;
+
 
 namespace EspnApi.Domain.Provider;
 
@@ -26,22 +27,23 @@ public class HttpProvider
         _httpClient = new HttpClient(handler, false);
     }
 
+
     public async Task<T> GetAsync<T>(string url)
     {
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         var jsonResponse = await _httpClient.GetStringAsync(url);
-        return JsonConvert.DeserializeObject<T>(jsonResponse);
+        return JsonSerializer.Deserialize<T>(jsonResponse);
     }
 
     /// <summary>
-    /// Returns just the string of the 
+    /// Gets the results of the Async call
     /// </summary>
     /// <param name="url"></param>
+    /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public Task<string> GetStringAsync(string url)
+    public T GetResults<T>(string url)
     {
-        _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        return _httpClient.GetStringAsync(url);
+        return GetAsync<T>(url).Result;
     }
-        
+    
 }

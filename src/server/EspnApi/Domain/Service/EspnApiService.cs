@@ -1,7 +1,7 @@
-using System.Text.Json.Nodes;
+using System.Text.Json;
 using EspnApi.Domain.Model;
 using EspnApi.Domain.Provider;
-using Newtonsoft.Json.Linq;
+using EspnApi.Domain.Extensions;
 
 namespace EspnApi.Domain.Service;
 
@@ -32,28 +32,28 @@ public class EspnApiService(int leagueId, string swid, string espnS2) : IEspnApi
 
     /// <summary>
     /// Returns the boxscores for a week.
+    ///
+    /// The ESPN Api is wierd and will return all scoring periods and matchup periods with this call.
+    /// However, the scoring period specified will contain the information that we need under the matchupPeriodId key.
+    /// Filter the response to only include elements that contain the matchupPeriodId = scoringPeriodId 
     /// </summary>
     /// <param name="seasonId"></param>
-    /// <param name="matchupPeriodId"></param>
     /// <param name="scoringPeriodId"></param>
     /// <returns></returns>
-    public BoxScoreRoot[] GetBoxScoreForWeek(int seasonId, int matchupPeriodId, int scoringPeriodId)
+    public BoxScoreRoot[] GetBoxScoreForWeek(int seasonId, int scoringPeriodId)
     {
         var url = new Route(
             $"{seasonId}/segments/0/leagues/{leagueId}",
             $"?view=mMatchup&view=mMatchupScore&scoringPeriodId={scoringPeriodId}"
         ).ToString();
-        var response =   _httpProvider.GetAsync<dynamic>(url).Result;
-        JArray schedule = response.schedule;
         
-        var res = 
-            schedule?
-                .Where(p => p["matchupPeriodId"].ToString() == matchupPeriodId.ToString())
-                .Select(jToken => jToken.ToObject<BoxScoreRoot>())
+        var response = _httpProvider.GetResults<JsonElement>(url).GetProperty("schedule");
+        
+        return response.EnumerateArray()
+                .Where(p => p.GetProperty("matchupPeriodId").ToString() == scoringPeriodId.ToString())
+                .Select(element => element.Deserialize<BoxScoreRoot>())
                 .ToArray();
-
-        return res;
-
+        
     }
 
     public Task<DraftPlayer> GetDraftInfo(int seasonId, int scoringPeriodId = 0)

@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace EspnApi.Domain.Model;
 
@@ -16,7 +16,7 @@ public class BoxScore
 {
     public BoxScoreRoster[] Roster { get; set; }
     
-    [JsonProperty("totalPoints")]
+    [JsonPropertyName("totalPoints")]
     public double Score { get; set; }
     
     public int TeamId { get; set; }

@@ -1,12 +1,14 @@
-using Newtonsoft.Json;
+
+
+using System.Text.Json.Serialization;
 
 namespace EspnApi.Domain.Model;
 
 public class League
 {
-    [JsonProperty("settings")]
+    [JsonPropertyName("settings")]
     public LeagueSettings LeagueSettings { get; set; }
         
-    [JsonProperty("status")]
+    [JsonPropertyName("status")]
     public LeagueStatus LeagueStatus { get; set; }
 }

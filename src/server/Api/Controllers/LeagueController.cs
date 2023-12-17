@@ -6,19 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]/{seasonId:int}")]
     public class LeagueController(IEspnApiService espnApiService) : ControllerBase
     {
-        [HttpGet("{seasonId:int}")]
+        [HttpGet("")]
         public Task<League> GetLeagueBySeason(int seasonId)
         {
             return espnApiService.GetLeagueBySeasonAsync(seasonId);
         }
 
-        [HttpGet("{seasonId:int}/{matchupPeriodId:int}/{scoringPeriodId:int}")]
-        public BoxScoreRoot[] GetBoxScoreForWeek(int seasonId, int matchupPeriodId, int scoringPeriodId)
+        [HttpGet("{scoringPeriodId:int}")]
+        public BoxScoreRoot[] GetBoxScoreForWeek(int seasonId, int scoringPeriodId)
         {
-            return espnApiService.GetBoxScoreForWeek(seasonId, matchupPeriodId, scoringPeriodId);
+            return espnApiService.GetBoxScoreForWeek(seasonId, scoringPeriodId);
         }
     }
 }
