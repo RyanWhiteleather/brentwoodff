@@ -16,9 +16,9 @@ namespace Api.Controllers
         }
 
         [HttpGet("{scoringPeriodId:int}")]
-        public BoxScoreRoot[] GetBoxScoreForWeek(int seasonId, int scoringPeriodId)
+        public Task<BoxScoreRoot[]> GetBoxScoreForWeek(int seasonId, int scoringPeriodId)
         {
-            return espnApiService.GetBoxScoreForWeek(seasonId, scoringPeriodId);
+            return espnApiService.GetBoxScoreForWeekAsync(seasonId, scoringPeriodId);
         }
     }
 }

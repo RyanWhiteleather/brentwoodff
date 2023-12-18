@@ -34,16 +34,4 @@ public class HttpProvider
         var jsonResponse = await _httpClient.GetStringAsync(url);
         return JsonSerializer.Deserialize<T>(jsonResponse);
     }
-
-    /// <summary>
-    /// Gets the results of the Async call
-    /// </summary>
-    /// <param name="url"></param>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    public T GetResults<T>(string url)
-    {
-        return GetAsync<T>(url).Result;
-    }
-    
 }

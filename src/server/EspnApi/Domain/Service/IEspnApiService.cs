@@ -6,7 +6,7 @@ public interface IEspnApiService
 {
     Task<League> GetLeagueBySeasonAsync(int seasonId);
 
-    BoxScoreRoot[] GetBoxScoreForWeek(int seasonId, int scoringPeriodId);
+    Task<BoxScoreRoot[]> GetBoxScoreForWeekAsync(int seasonId, int scoringPeriodId);
 
     Task<DraftPlayer> GetDraftInfo(int seasonId, int scoringPeriodId = 0);
 }

@@ -32,24 +32,27 @@ public class EspnApiService(int leagueId, string swid, string espnS2) : IEspnApi
 
     /// <summary>
     /// Returns the boxscores for a week.
-    ///
-    /// The ESPN Api is wierd and will return all scoring periods and matchup periods with this call.
-    /// However, the scoring period specified will contain the information that we need under the matchupPeriodId key.
-    /// Filter the response to only include elements that contain the matchupPeriodId = scoringPeriodId 
+    /// 
+    /// The ESPN Api is wierd and will return a bunch of information that we don't need, so we need to do a little conversion in this call.
+    /// First, we only care about the schedule property of the response.
+    /// The ESPN API will return partial information for all scoring periods and full information for the scoring period passed in to that call.
+    /// Filter the response to only include elements that contain the matchupPeriodId = scoringPeriodId, this will give us the full information. 
     /// </summary>
     /// <param name="seasonId"></param>
     /// <param name="scoringPeriodId"></param>
     /// <returns></returns>
-    public BoxScoreRoot[] GetBoxScoreForWeek(int seasonId, int scoringPeriodId)
+    public async Task<BoxScoreRoot[]> GetBoxScoreForWeekAsync(int seasonId, int scoringPeriodId)
     {
         var url = new Route(
             $"{seasonId}/segments/0/leagues/{leagueId}",
             $"?view=mMatchup&view=mMatchupScore&scoringPeriodId={scoringPeriodId}"
         ).ToString();
+
+        var response = await _httpProvider.GetAsync<JsonElement>(url);
         
-        var response = _httpProvider.GetResults<JsonElement>(url).GetProperty("schedule");
-        
-       return response.EnumerateArray()
+       return response
+                .GetProperty("schedule")
+                .EnumerateArray()
                 .Where(p => p.GetProperty("matchupPeriodId").ToString() == scoringPeriodId.ToString())
                 .Select(element => element.Deserialize<BoxScoreRoot>())
                 .ToArray();
