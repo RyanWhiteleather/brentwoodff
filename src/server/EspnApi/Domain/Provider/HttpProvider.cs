@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using EspnApi.Domain.Extensions;
 
 
 namespace EspnApi.Domain.Provider;
@@ -8,8 +9,11 @@ namespace EspnApi.Domain.Provider;
 public class HttpProvider
 {
     private readonly HttpClient _httpClient;
-        
-        
+    private static readonly JsonSerializerOptions DefaultSerializerSettings = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
     /// <summary>
     /// Creates the HttpProvider to handle the HTTP requests.  
     /// </summary>
@@ -32,6 +36,7 @@ public class HttpProvider
     {
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         var jsonResponse = await _httpClient.GetStringAsync(url);
-        return JsonSerializer.Deserialize<T>(jsonResponse);
+        // TODO: Research how people actually do this, I created an extension method but not sure if that is the best way to do it.
+        return JsonSerializer.Deserialize<T>(jsonResponse, DefaultSerializerSettings);
     }
 }

@@ -9,7 +9,7 @@ namespace Api.Controllers
     [Route("[controller]/{seasonId:int}")]
     public class LeagueController(IEspnApiService espnApiService) : ControllerBase
     {
-        [HttpGet("")]
+        [HttpGet]
         public Task<League> GetLeagueBySeason(int seasonId)
         {
             return espnApiService.GetLeagueBySeasonAsync(seasonId);
