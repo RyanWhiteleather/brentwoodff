@@ -36,7 +36,6 @@ public class HttpProvider
     {
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         var jsonResponse = await _httpClient.GetStringAsync(url);
-        // TODO: Research how people actually do this, I created an extension method but not sure if that is the best way to do it.
         return JsonSerializer.Deserialize<T>(jsonResponse, DefaultSerializerSettings);
     }
 }
